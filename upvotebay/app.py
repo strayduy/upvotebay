@@ -26,9 +26,9 @@ def create_app(config_object, env):
     # Register blueprints
     from .modules import public
     from .modules import oauth
-    from .modules import me
+    from .modules import my
     app.register_blueprint(public.blueprint)
     app.register_blueprint(oauth.blueprint)
-    app.register_blueprint(me.blueprint, url_prefix='/me')
+    app.register_blueprint(my.blueprint, url_prefix='/my')
 
     return app

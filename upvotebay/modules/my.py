@@ -9,13 +9,14 @@ from flask.ext.mako import render_template
 # Our libs
 from upvotebay.utils import login_required
 
-blueprint = Blueprint('me',
+blueprint = Blueprint('my',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
 
 @blueprint.route('/')
+@blueprint.route('/profile/')
 @login_required
-def index():
+def profile():
     username = session['username']
     return username

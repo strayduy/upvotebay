@@ -34,4 +34,4 @@ def index():
     user = reddit.get_me()
     session['username'] = user.name
 
-    return redirect(url_for('me.index'))
+    return redirect(url_for('my.profile'))
