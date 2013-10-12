@@ -9,4 +9,8 @@ gevent==0.13.8
 greenlet==0.4.1
 gunicorn==18.0
 itsdangerous==0.23
+praw==2.1.9
+requests==2.0.0
+six==1.4.1
+update-checker==0.6
 wsgiref==0.1.2
