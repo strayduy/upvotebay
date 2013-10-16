@@ -6,8 +6,13 @@ import uuid
 # Third party libs
 import flask
 from flask import Blueprint
+from flask import redirect
 from flask import session
+from flask import url_for
 from flask.ext.mako import render_template
+
+# Our libs
+from upvotebay.utils import redirect_logged_in_users_to_profile
 
 blueprint = Blueprint('public',
                       __name__,
@@ -15,6 +20,7 @@ blueprint = Blueprint('public',
                       template_folder='../templates')
 
 @blueprint.route('/')
+@redirect_logged_in_users_to_profile
 def index():
     # Generate a unique key for the authorization URL. We'll check for a
     # matching key in the oauth callback, to protect against cross-site request
@@ -24,3 +30,11 @@ def index():
     auth_url = flask.current_app.reddit.get_authorize_url(auth_key)
     return render_template('index.html',
                            auth_url=auth_url)
+
+# Logging out via POST request only
+# http://stackoverflow.com/a/14587231
+@blueprint.route('/logout', methods=['POST'])
+def logout():
+    session.pop('username', None)
+    session.pop('oauth_token', None)
+    return redirect(url_for('public.index'))

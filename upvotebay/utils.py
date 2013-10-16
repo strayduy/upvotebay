@@ -19,3 +19,13 @@ def login_required(view):
         flash('Please sign in first.')
         return redirect(url_for('public.index'))
     return wrap
+
+def redirect_logged_in_users_to_profile(view):
+    '''Decorator that redirects logged-in users to their profile page.'''
+    @wraps(view)
+    def wrap(*args, **kwargs):
+        if not session.get('username'):
+            return view(*args, **kwargs)
+
+        return redirect(url_for('my.profile'))
+    return wrap

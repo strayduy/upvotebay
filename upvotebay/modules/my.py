@@ -19,4 +19,5 @@ blueprint = Blueprint('my',
 @login_required
 def profile():
     username = session['username']
-    return username
+    return render_template('my/profile.html',
+                           username=username)
