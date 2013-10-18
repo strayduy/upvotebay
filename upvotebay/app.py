@@ -17,7 +17,7 @@ def create_app(config_object, env):
     mako = MakoTemplates(app)
 
     # Initialize reddit client
-    reddit = praw.Reddit('upvotebay 0.1')
+    reddit = praw.Reddit(app.config['REDDIT_USER_AGENT'])
     reddit.set_oauth_app_info(app.config['REDDIT_CLIENT_ID'],
                               app.config['REDDIT_CLIENT_SECRET'],
                               app.config['REDDIT_REDIRECT_URI'])

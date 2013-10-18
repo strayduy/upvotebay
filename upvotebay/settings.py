@@ -9,6 +9,7 @@ class Config(object):
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
 
     # reddit oauth credentials
+    REDDIT_USER_AGENT = 'upvotebay/0.1 by /u/strayharbor'
     REDDIT_CLIENT_ID = os.getenv('REDDIT_CLIENT_ID', '')
     REDDIT_CLIENT_SECRET = os.getenv('REDDIT_CLIENT_SECRET', '')
     REDDIT_REDIRECT_URI = os.getenv('REDDIT_REDIRECT_URI', '')
