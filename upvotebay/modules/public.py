@@ -27,7 +27,10 @@ def index():
     # forgery.
     auth_key = str(uuid.uuid4())
     session['auth_key'] = auth_key
-    auth_url = flask.current_app.reddit.get_authorize_url(auth_key)
+    reddit = flask.current_app.reddit
+    auth_url = reddit.get_authorize_url(auth_key,
+                                        scope=['identity', 'read'],
+                                        refreshable=True)
     return render_template('index.html',
                            auth_url=auth_url)
 
@@ -36,5 +39,5 @@ def index():
 @blueprint.route('/logout', methods=['POST'])
 def logout():
     session.pop('username', None)
-    session.pop('oauth_token', None)
+    session.pop('oauth_refresh_token', None)
     return redirect(url_for('public.index'))

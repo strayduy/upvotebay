@@ -24,13 +24,13 @@ def index():
         # Unauthorized
         abort(401)
 
-    # Store the new oauth token
-    token = request.args.get('code', '')
-    session['oauth_token'] = token
-
-    # Retrieve user info
+    # Retrieve access info
     reddit = flask.current_app.reddit
-    info = reddit.get_access_information(token)
+    access_code = request.args.get('code', '')
+    access_info = reddit.get_access_information(access_code)
+
+    # Store oauth refresh token and username
+    session['oauth_refresh_token'] = access_info['refresh_token']
     user = reddit.get_me()
     session['username'] = user.name
 

@@ -1,6 +1,19 @@
 <%inherit file="../base.html"/>
 
-${username}
+${user.name}
+
+<br>
+
+% if liked:
+    <ul>
+        % for link in liked:
+            <li>
+                <p><a href="${link.url}">${link.title}</a></p>
+                <p>Posted by ${link.author} to /r/${link.subreddit}</p>
+            </li>
+        % endfor
+    </ul>
+% endif
 
 <br>
 

@@ -18,6 +18,20 @@ blueprint = Blueprint('my',
 @blueprint.route('/profile/')
 @login_required
 def profile():
+    reddit = flask.current_app.reddit
+
+    # Retrieve access info
+    oauth_refresh_token = session['oauth_refresh_token']
+    access_info = reddit.refresh_access_information(oauth_refresh_token)
+
+    # Get user info
+    user = reddit.get_me()
+    try:
+        liked = user.get_liked()
+    except:
+        liked = []
+
     username = session['username']
     return render_template('my/profile.html',
-                           username=username)
+                           user=user,
+                           liked=liked)
