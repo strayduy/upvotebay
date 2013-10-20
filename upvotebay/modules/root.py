@@ -14,7 +14,7 @@ from flask.ext.mako import render_template
 # Our libs
 from upvotebay.utils import redirect_logged_in_users_to_profile
 
-blueprint = Blueprint('public',
+blueprint = Blueprint('root',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
@@ -40,4 +40,4 @@ def index():
 def logout():
     session.pop('username', None)
     session.pop('oauth_refresh_token', None)
-    return redirect(url_for('public.index'))
+    return redirect(url_for('root.index'))
