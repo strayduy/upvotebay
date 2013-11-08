@@ -16,13 +16,6 @@ def create_app(config_object, env):
     # Use Mako instead of Jinja
     mako = MakoTemplates(app)
 
-    # Initialize reddit client
-    reddit = praw.Reddit(app.config['REDDIT_USER_AGENT'])
-    reddit.set_oauth_app_info(app.config['REDDIT_CLIENT_ID'],
-                              app.config['REDDIT_CLIENT_SECRET'],
-                              app.config['REDDIT_REDIRECT_URI'])
-    app.reddit = reddit
-
     # Register blueprints
     from .modules import public
     from .modules import oauth
