@@ -17,10 +17,10 @@ def create_app(config_object, env):
     mako = MakoTemplates(app)
 
     # Register blueprints
-    from .modules import public
+    from .modules import root
     from .modules import oauth
     from .modules import my
-    app.register_blueprint(public.blueprint)
+    app.register_blueprint(root.blueprint)
     app.register_blueprint(oauth.blueprint)
     app.register_blueprint(my.blueprint, url_prefix='/my')
 

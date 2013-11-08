@@ -20,7 +20,7 @@ def login_required(view):
             return view(*args, **kwargs)
 
         flash('Please sign in first.')
-        return redirect(url_for('public.index'))
+        return redirect(url_for('root.index'))
     return wrap
 
 def redirect_logged_in_users_to_profile(view):
