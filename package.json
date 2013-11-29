@@ -1,0 +1,24 @@
+{
+  "name": "upvotebay",
+  "version": "0.0.0",
+  "description": "upvotebay =========",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "~0.4.2",
+    "grunt-bower-task": "~0.3.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/strayduy/upvotebay.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/strayduy/upvotebay/issues"
+  },
+  "homepage": "https://github.com/strayduy/upvotebay"
+}
