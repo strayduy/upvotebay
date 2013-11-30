@@ -20,10 +20,8 @@ def create_app(config_object, env):
     from .modules import root
     from .modules import oauth
     from .modules import api
-    from .modules import my
     app.register_blueprint(root.blueprint)
     app.register_blueprint(oauth.blueprint)
     app.register_blueprint(api.blueprint, url_prefix='/api/v1')
-    app.register_blueprint(my.blueprint, url_prefix='/my')
 
     return app
