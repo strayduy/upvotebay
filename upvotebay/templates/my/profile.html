@@ -49,29 +49,7 @@
 <%block name="js">
 <script>
 (function() {
-    var Profile = Class.$extend({
-        __init__ : function(username) {
-            this.username = username;
-            this.likes = ko.observableArray();
-        },
-
-        load_likes : function() {
-            var self = this;
-            $.getJSON('/my/likes.json').done(function(data) {
-                self.likes(data.likes);
-            });
-        },
-
-        logout : function() {
-            $('#logout-form').submit();
-        },
-    });
-
     $(document).ready(function() {
-        var username = "${username}";
-        var profile_model = new Profile(username);
-        profile_model.load_likes();
-        ko.applyBindings(profile_model);
     });
 })();
 </script>
