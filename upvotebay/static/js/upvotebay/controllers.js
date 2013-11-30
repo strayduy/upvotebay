@@ -1,8 +1,9 @@
 var upvotebay = angular.module('upvotebay', []);
 
-upvotebay.controller('UpvoteCtrl', function($scope) {
-    $scope.upvotes = [
-        {title: 'Title 1'},
-        {title: 'Title 2'},
-    ];
-});
+upvotebay.controller('UpvoteCtrl', ['$scope', '$http',
+    function($scope, $http) {
+        $http.get('/api/v1/my/likes.json').success(function(data) {
+            $scope.likes = data['likes'];
+        });
+    }]
+);
