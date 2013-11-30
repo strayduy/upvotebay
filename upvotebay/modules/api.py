@@ -9,7 +9,6 @@ from flask import session
 from flask.ext.mako import render_template
 
 # Our libs
-from upvotebay.utils import login_required
 from upvotebay.utils import reddit_client
 from upvotebay.utils import PrawEncoder
 
