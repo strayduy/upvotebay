@@ -5,7 +5,7 @@ var upvotebayApp = angular.module('upvotebayApp', [
 
 upvotebayApp.config(['$routeProvider', '$locationProvider',
     function($routeProvider, $locationProvider) {
-        $locationProvider.html5Mode(true);//.hashPrefix('!');
+        $locationProvider.html5Mode(true);
         $routeProvider.
             when('/', {
                 templateUrl: '/static/partials/my-profile.html',
