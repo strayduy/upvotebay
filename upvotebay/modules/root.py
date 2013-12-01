@@ -12,7 +12,6 @@ from flask import url_for
 from flask.ext.mako import render_template
 
 # Our libs
-from upvotebay.utils import redirect_logged_in_users_to_profile
 from upvotebay.utils import reddit_client
 
 blueprint = Blueprint('root',
@@ -21,9 +20,14 @@ blueprint = Blueprint('root',
                       template_folder='../templates')
 
 @blueprint.route('/')
-@redirect_logged_in_users_to_profile
 @reddit_client
 def index(reddit=None):
+    if not session.get('username'):
+        return landing(reddit)
+
+    return home(reddit)
+
+def landing(reddit):
     # Generate a unique key for the authorization URL. We'll check for a
     # matching key in the oauth callback, to protect against cross-site request
     # forgery.
@@ -32,8 +36,11 @@ def index(reddit=None):
     auth_url = reddit.get_authorize_url(auth_key,
                                         scope=['identity', 'read'],
                                         refreshable=True)
-    return render_template('index.html',
+    return render_template('landing.html',
                            auth_url=auth_url)
+
+def home(reddit):
+    return render_template('home.html')
 
 # Logging out via POST request only
 # http://stackoverflow.com/a/14587231

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="upvotebay">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +9,11 @@
     <link rel="shortcut icon" href="${url_for('static', filename='img/favicon.png')}">
     </%doc>
 
-    <title>Starter Template for Bootstrap</title>
+    <title><%block document_title>Starter Template for Bootstrap</%block></title>
 
     <!-- Bootstrap core CSS -->
     <link href="${url_for('static', filename='css/bootstrap/bootstrap.min.css')}" rel="stylesheet">
+    <link href="${url_for('static', filename='css/upvotebay/upvotebay.css')}" rel="stylesheet">
     <%block name="css">
     </%block>
   </head>
@@ -25,12 +26,12 @@
 
     </div><!-- /.container -->
 
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="${url_for('static', filename='js/jquery/jquery.min.js')}"></script>
     <script src="${url_for('static', filename='js/bootstrap/bootstrap.min.js')}"></script>
+    <script src="${url_for('static', filename='js/angular/angular.min.js')}"></script>
     <%block name="js">
     </%block>
   </body>

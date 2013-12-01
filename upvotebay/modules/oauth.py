@@ -11,7 +11,6 @@ from flask import url_for
 from flask.ext.mako import render_template
 
 # Our libs
-from upvotebay.utils import login_required
 from upvotebay.utils import reddit_client
 
 blueprint = Blueprint('oauth',
@@ -42,4 +41,4 @@ def index(reddit=None):
     user = reddit.get_me()
     session['username'] = user.name
 
-    return redirect(url_for('my.profile'))
+    return redirect(url_for('root.index'))

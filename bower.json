@@ -15,10 +15,15 @@
     "tests"
   ],
   "dependencies": {
+    "angular": "~1.2.3",
     "bootstrap": "~3.0.2",
     "jquery": "~2.0.3"
   },
   "exportsOverride": {
+      "angular": {
+          "css": "*.css",
+          "js": ["*.js", "*.js.map"]
+      },
       "bootstrap": {
           "js": "dist/js/*.js",
           "css": "dist/css/*.css",

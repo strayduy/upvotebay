@@ -9,27 +9,17 @@ from flask import session
 from flask.ext.mako import render_template
 
 # Our libs
-from upvotebay.utils import login_required
 from upvotebay.utils import reddit_client
 from upvotebay.utils import PrawEncoder
 
-blueprint = Blueprint('my',
+blueprint = Blueprint('api',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
 
-@blueprint.route('/')
-@blueprint.route('/profile/')
-@login_required
-def profile():
-    username = session['username']
-    return render_template('my/profile.html',
-                           username=username)
-
-@blueprint.route('/likes.json')
-@login_required
+@blueprint.route('/users/<username>/likes.json')
 @reddit_client
-def get_likes(reddit=None):
+def user_likes(username, reddit=None):
     # Set credentials
     reddit.set_access_credentials(scope=set(session['access_info']['scope']),
                                   access_token=session['access_info']['access_token'],
@@ -41,3 +31,9 @@ def get_likes(reddit=None):
 
     return Response(json.dumps(data, cls=PrawEncoder),
                     mimetype='application/json')
+
+@blueprint.route('/my/likes.json')
+@reddit_client
+def my_likes(reddit=None):
+    username = session['username']
+    return user_likes(username)
