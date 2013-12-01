@@ -14,6 +14,8 @@ class Config(object):
     REDDIT_CLIENT_SECRET = os.environ['REDDIT_CLIENT_SECRET']
     REDDIT_REDIRECT_URI = os.environ['REDDIT_REDIRECT_URI']
 
+    REDDIT_OAUTH_SCOPES = ['identity', 'history', 'read', 'mysubreddits']
+
 class ProdConfig(Config):
     DEBUG = False
 
