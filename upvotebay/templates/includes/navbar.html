@@ -11,19 +11,25 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        username
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <form id="logout-form" action="/logout" method="post">
-                                <button type="submit" class="btn btn-link">Sign out</button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
+                % if session.get('username'):
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            username
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form id="logout-form" action="/logout" method="post">
+                                    <button type="submit" class="btn btn-link">Sign out</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                % else:
+                    <li>
+                        <a href="${auth_url}">Sign in</a>
+                    </li>
+                % endif
             </ul>
-        </div><!--/.navbar-collapse -->
+        </div>
     </div>
 </div>
