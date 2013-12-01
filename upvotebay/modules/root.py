@@ -19,11 +19,9 @@ blueprint = Blueprint('root',
                       static_folder='../static',
                       template_folder='../templates')
 
-@blueprint.route('/u/')
-@blueprint.route('/u/<path:extra_path>')
-@blueprint.route('/') # Last route decorator = canonical URL
+@blueprint.route('/')
 @reddit_client
-def index(extra_path=None, reddit=None):
+def index(reddit=None):
     if not session.get('username'):
         return landing(reddit)
 
@@ -44,6 +42,12 @@ def landing(reddit):
                            auth_url=auth_url)
 
 def home(reddit):
+    return render_template('home.html')
+
+@blueprint.route('/u/')
+@blueprint.route('/u/<path:extra_path>')
+@reddit_client
+def user(extra_path=None, reddit=None):
     return render_template('home.html')
 
 # Logging out via POST request only
