@@ -21,7 +21,7 @@ blueprint = Blueprint('root',
 
 @blueprint.route('/u/')
 @blueprint.route('/u/<path:extra_path>')
-@blueprint.route('/')
+@blueprint.route('/') # Last route decorator = canonical URL
 @reddit_client
 def index(extra_path=None, reddit=None):
     if not session.get('username'):
