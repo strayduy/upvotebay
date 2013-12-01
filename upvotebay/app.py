@@ -22,6 +22,6 @@ def create_app(config_object, env):
     from .modules import api
     app.register_blueprint(root.blueprint)
     app.register_blueprint(oauth.blueprint)
-    app.register_blueprint(api.blueprint, url_prefix='/api/v1')
+    app.register_blueprint(api.blueprint, url_prefix='/api')
 
     return app

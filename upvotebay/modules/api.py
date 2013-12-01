@@ -17,7 +17,7 @@ blueprint = Blueprint('api',
                       static_folder='../static',
                       template_folder='../templates')
 
-@blueprint.route('/users/<username>/likes.json')
+@blueprint.route('/v1/users/<username>/likes.json')
 @reddit_client
 def user_likes(username, reddit=None):
     user = reddit.get_redditor(username)
@@ -26,7 +26,7 @@ def user_likes(username, reddit=None):
     return Response(json.dumps(data, cls=PrawEncoder),
                     mimetype='application/json')
 
-@blueprint.route('/my/likes.json')
+@blueprint.route('/v1/my/likes.json')
 @reddit_client
 def my_likes(reddit=None):
     # Set credentials
