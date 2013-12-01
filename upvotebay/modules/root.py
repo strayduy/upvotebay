@@ -53,3 +53,11 @@ def logout():
     session.pop('username', None)
     session.pop('oauth_refresh_token', None)
     return redirect(url_for('root.index'))
+
+@blueprint.app_errorhandler(404)
+def error_404(error):
+    return render_template('errors/404.html'), 404
+
+@blueprint.app_errorhandler(500)
+def error_500(error):
+    return render_template('errors/500.html'), 500
