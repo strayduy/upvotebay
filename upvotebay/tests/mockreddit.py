@@ -8,7 +8,7 @@ from flask import url_for
 
 class MockReddit(object):
     def __init__(self):
-        self.user = MockRedditUser('mock_user')
+        self.user = None
         self.scope = []
         self.refreshable = False
 
@@ -21,6 +21,7 @@ class MockReddit(object):
         return url_for('oauth.oauth_callback', state=state)
 
     def get_access_information(self, code, update_session=True):
+        self.user = MockRedditUser('mock_user')
         access_info = {
             'scope': self.scope,
             'access_token': '',
@@ -30,7 +31,7 @@ class MockReddit(object):
 
     def set_access_credentials(self, scope, access_token, refresh_token=None,
                                update_user=True):
-        pass
+        self.user = MockRedditUser('mock_user')
 
 class MockRedditUser(object):
     def __init__(self, name):
