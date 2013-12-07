@@ -15,6 +15,10 @@ class MockReddit(object):
     def get_me(self):
         return self.user
 
+    def get_redditor(self, username):
+        redditor = MockRedditUser(username)
+        return redditor
+
     def get_authorize_url(self, state, scope=False, refreshable=False):
         self.scope = scope
         self.refreshable = refreshable
