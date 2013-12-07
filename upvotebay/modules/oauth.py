@@ -20,7 +20,7 @@ blueprint = Blueprint('oauth',
 
 @blueprint.route('/oauth/callback')
 @reddit_client
-def index(reddit=None):
+def oauth_callback(reddit=None):
     # Verify that the provided auth key matches the one that we used to
     # initiate the oauth exchange
     auth_key = request.args.get('state', '')
