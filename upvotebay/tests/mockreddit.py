@@ -40,9 +40,9 @@ class MockRedditUser(object):
         subreddit = namedtuple('Subreddit', 'display_name')
         subreddit.display_name = 'mockIAma'
         return [MockRedditSubmission('IAmA fake submission. AMA!',
-                                  'http://www.example.com',
-                                  MockRedditUser('mock_user'),
-                                  subreddit)]
+                                     'http://www.example.com',
+                                     MockRedditUser('mock_user'),
+                                     subreddit)]
 
 class MockRedditSubmission(object):
     def __init__(self, title, url, author, subreddit):
