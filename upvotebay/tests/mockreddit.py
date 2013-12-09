@@ -2,6 +2,7 @@
 
 # Standard libs
 from collections import namedtuple
+import random
 
 # Third party libs
 from flask import url_for
@@ -42,16 +43,34 @@ class MockRedditUser(object):
         self.name = name
 
     def get_liked(self, sort='new', time='all'):
-        subreddit = namedtuple('Subreddit', 'display_name')
-        subreddit.display_name = 'mockIAma'
-        return [MockRedditSubmission('IAmA fake submission. AMA!',
-                                     'http://www.example.com',
-                                     MockRedditUser('mock_user'),
-                                     subreddit)]
+        liked = [MockRedditSubmission('IAmA fake submission. AMA!',
+                                      'http://www.example.com',
+                                      MockRedditUser('mock_user_1'),
+                                      'mock_IAmA'),
+                 MockRedditSubmission('ELI5: Creating a fake submission',
+                                      'http://www.example.com',
+                                      MockRedditUser('mock_user_2'),
+                                      'mock_explainlikeimfive'),
+                 MockRedditSubmission('TIL you can submit fake links',
+                                      'http://www.example.com',
+                                      MockRedditUser('mock_user_3'),
+                                      'mock_todayilearned'),
+                 MockRedditSubmission('DAE ask questions?',
+                                      'http://www.example.com',
+                                      MockRedditUser('mock_user_4'),
+                                      'mock_AskReddit'),
+                 MockRedditSubmission('A cat',
+                                      'http://www.example.com',
+                                      MockRedditUser('mock_user_5'),
+                                      'mock_awww')]
+        random.shuffle(liked)
+        return liked
 
 class MockRedditSubmission(object):
     def __init__(self, title, url, author, subreddit):
         self.title = title
         self.url = url
         self.author = author
-        self.subreddit = subreddit
+
+        self.subreddit = namedtuple('Subreddit', 'display_name')
+        self.subreddit.display_name = subreddit
