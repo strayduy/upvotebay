@@ -18,6 +18,10 @@ class Config(object):
 class ProdConfig(Config):
     DEBUG = False
 
+class TestConfig(Config):
+    DEBUG = False
+    USE_MOCK_REDDIT_CLIENT = True
+
 class DevConfig(Config):
     DEBUG = True
 

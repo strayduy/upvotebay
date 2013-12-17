@@ -6,6 +6,7 @@ import os
 
 # Third party libs
 from flask.ext.script import Manager, Server
+import nose
 
 # Our libs
 from upvotebay.app import create_app
@@ -30,6 +31,13 @@ manager = Manager(_create_app())
 # Built-in commands
 manager.add_command('runserver', Server(host='0.0.0.0',
                                         port=os.getenv('PORT', DEFAULT_PORT)))
+
+# Custom commands
+@manager.command
+def test():
+    nose.run(argv=['-w', 'upvotebay/tests',
+                   '--with-coverage',
+                   '--cover-package=upvotebay'])
 
 if __name__ == '__main__':
     manager.run()
