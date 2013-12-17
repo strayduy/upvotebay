@@ -1,2 +1,5 @@
 # Everything the developer needs in addition to the production requirements
 -r prod.txt
+
+# Management script
+Flask-Script==0.6.6
