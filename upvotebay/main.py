@@ -10,7 +10,11 @@ import os
 
 # Our libs
 from .app import create_app
+from .settings import DevConfig, ProdConfig
 
 env = os.getenv('UPVOTEBAY_ENV', 'dev')
-config_object = 'upvotebay.settings.{env}Config'.format(env=env.capitalize())
-app = create_app(config_object, env)
+
+if env.lower() == 'prod':
+    app = create_app(ProdConfig)
+else:
+    app = create_app(DevConfig)

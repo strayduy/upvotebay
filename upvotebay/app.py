@@ -8,10 +8,9 @@ from flask import Flask
 from flask.ext.mako import MakoTemplates
 import praw
 
-def create_app(config_object, env):
+def create_app(config_object):
     app = Flask(__name__)
     app.config.from_object(config_object)
-    app.config['ENV'] = env
 
     # Use Mako instead of Jinja
     mako = MakoTemplates(app)
