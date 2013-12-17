@@ -15,13 +15,13 @@ class Config(object):
     REDDIT_REDIRECT_URI = os.environ['REDDIT_REDIRECT_URI']
     REDDIT_OAUTH_SCOPES = ['identity', 'history', 'read', 'mysubreddits']
 
-    # Test settings
-    USE_MOCK_REDDIT_CLIENT = (True if os.getenv('USE_MOCK_REDDIT_CLIENT', '').lower()
-                                   in ['true', '1']
-                                   else False)
-
 class ProdConfig(Config):
     DEBUG = False
 
 class DevConfig(Config):
     DEBUG = True
+
+    # Test settings
+    USE_MOCK_REDDIT_CLIENT = (True if os.getenv('USE_MOCK_REDDIT_CLIENT', '').lower()
+                                   in ['true', '1']
+                                   else False)
