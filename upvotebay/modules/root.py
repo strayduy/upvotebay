@@ -7,9 +7,9 @@ import uuid
 import flask
 from flask import Blueprint
 from flask import redirect
+from flask import render_template
 from flask import session
 from flask import url_for
-from flask.ext.mako import render_template
 
 # Our libs
 from upvotebay.utils import reddit_client

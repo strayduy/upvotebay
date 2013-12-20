@@ -5,33 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <%doc>
-    <link rel="shortcut icon" href="${url_for('static', filename='img/favicon.png')}">
-    </%doc>
+    {#
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+    #}
 
-    <title><%block document_title>Starter Template for Bootstrap</%block></title>
+    <title>{% block document_title %}Starter Template for Bootstrap{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="${url_for('static', filename='css/bootstrap/bootstrap.min.css')}" rel="stylesheet">
-    <link href="${url_for('static', filename='css/upvotebay/upvotebay.css')}" rel="stylesheet">
-    <%block name="css">
-    </%block>
+    <link href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/upvotebay/upvotebay.css') }}" rel="stylesheet">
+    {% block css %}
+    {% endblock %}
   </head>
 
   <body>
 
     <div class="container">
 
-      ${self.body()}
+      {% block content %}
+      {% endblock %}
 
     </div><!-- /.container -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="${url_for('static', filename='js/jquery/jquery.min.js')}"></script>
-    <script src="${url_for('static', filename='js/bootstrap/bootstrap.min.js')}"></script>
-    <%block name="js">
-    </%block>
+    <script src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap/bootstrap.min.js') }}"></script>
+    {% block js %}
+    {% endblock %}
   </body>
 </html>
