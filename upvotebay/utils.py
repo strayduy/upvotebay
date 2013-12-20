@@ -21,7 +21,7 @@ def reddit_client(view):
 
         if config.get('USE_MOCK_REDDIT_CLIENT'):
             # Initialize mock reddit client
-            reddit = MockReddit()
+            reddit = MockReddit(config)
         else:
             # Initialize reddit client
             reddit = praw.Reddit(config['REDDIT_USER_AGENT'])
