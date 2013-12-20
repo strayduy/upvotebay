@@ -2,6 +2,7 @@
 
 # Standard libs
 from urlparse import urlparse
+import uuid
 
 # Third party libs
 from flask import url_for
@@ -90,7 +91,8 @@ class TestLoggingOut(BaseTestCase):
 
 class TestOAuthCallback(BaseTestCase):
     def test_valid_oauth_state(self):
-        auth_key = 'supersecret'
+        # Generate key
+        auth_key = str(uuid.uuid4())
 
         # Save OAuth key in session
         with self.test_app.session_transaction() as _session:
