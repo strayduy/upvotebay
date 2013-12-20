@@ -1,12 +1,14 @@
-<%inherit file="base.html"/>
+{% extends "base.html" %}
 
-<%include file="includes/navbar.html"/>
+{% block content %}
+{% include "includes/navbar.html" %}
 
 <div ng-view></div>
+{% endblock %}
 
-<%block name="js">
-<script src="${url_for('static', filename='js/angular/angular.js')}"></script>
-<script src="${url_for('static', filename='js/angular-route/angular-route.min.js')}"></script>
-<script src="${url_for('static', filename='js/upvotebay/app.js')}"></script>
-<script src="${url_for('static', filename='js/upvotebay/controllers.js')}"></script>
-</%block>
+{% block js %}
+<script src="{{ url_for('static', filename='js/angular/angular.js') }}"></script>
+<script src="{{ url_for('static', filename='js/angular-route/angular-route.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/upvotebay/app.js') }}"></script>
+<script src="{{ url_for('static', filename='js/upvotebay/controllers.js') }}"></script>
+{% endblock %}

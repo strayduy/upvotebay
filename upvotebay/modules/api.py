@@ -6,7 +6,6 @@ from flask import Blueprint
 from flask import json
 from flask import Response
 from flask import session
-from flask.ext.mako import render_template
 
 # Our libs
 from upvotebay.utils import reddit_client
