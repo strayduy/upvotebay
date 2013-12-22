@@ -9,6 +9,7 @@ from flask import session
 
 # Our libs
 from upvotebay.utils import reddit_client
+from upvotebay.utils import login_required
 from upvotebay.utils import PrawEncoder
 
 blueprint = Blueprint('api',
@@ -27,6 +28,7 @@ def user_likes(username, reddit=None):
 
 @blueprint.route('/v1/my/likes.json')
 @reddit_client
+@login_required
 def my_likes(reddit=None):
     # Set credentials
     reddit.set_access_credentials(scope=set(session['access_info']['scope']),
