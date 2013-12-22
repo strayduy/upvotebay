@@ -5,7 +5,9 @@ from functools import wraps
 
 # Third party libs
 import flask
+from flask import abort
 from flask import json
+from flask import session
 import praw
 
 # Our libs
@@ -21,7 +23,7 @@ def reddit_client(view):
 
         if config.get('USE_MOCK_REDDIT_CLIENT'):
             # Initialize mock reddit client
-            reddit = MockReddit()
+            reddit = MockReddit(config)
         else:
             # Initialize reddit client
             reddit = praw.Reddit(config['REDDIT_USER_AGENT'])
@@ -31,6 +33,16 @@ def reddit_client(view):
         kwargs['reddit'] = reddit
 
         return view(*args, **kwargs)
+    return wrap
+
+def login_required(view):
+    # Raises a 401 HTTP error if the user is not logged in
+    @wraps(view)
+    def wrap(*args, **kwargs):
+        if session.get('username'):
+            return view(*args, **kwargs)
+
+        abort(401)
     return wrap
 
 class PrawEncoder(json.JSONEncoder):

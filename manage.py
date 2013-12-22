@@ -37,7 +37,10 @@ manager.add_command('runserver', Server(host='0.0.0.0',
 def test():
     nose.run(argv=['-w', 'upvotebay/tests',
                    '--with-coverage',
-                   '--cover-package=upvotebay'])
+                   '--cover-package=upvotebay',
+                   '--cover-html',
+                   '--cover-html-dir=./coverage_report',
+                   '--cov-config=.coveragerc'])
 
 if __name__ == '__main__':
     manager.run()

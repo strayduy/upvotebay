@@ -8,9 +8,9 @@ import random
 from flask import url_for
 
 class MockReddit(object):
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.user = None
-        self.scope = []
         self.refreshable = False
 
     def get_me(self):
@@ -20,15 +20,14 @@ class MockReddit(object):
         redditor = MockRedditUser(username)
         return redditor
 
-    def get_authorize_url(self, state, scope=False, refreshable=False):
-        self.scope = scope
+    def get_authorize_url(self, state, scope='identity', refreshable=False):
         self.refreshable = refreshable
         return url_for('oauth.oauth_callback', state=state)
 
     def get_access_information(self, code, update_session=True):
         self.user = MockRedditUser('mock_user')
         access_info = {
-            'scope': self.scope,
+            'scope': self.config['REDDIT_OAUTH_SCOPES'],
             'access_token': '',
             'refresh_token': '',
         }
