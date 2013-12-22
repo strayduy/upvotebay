@@ -16,7 +16,8 @@ from upvotebay.modules import root
 from upvotebay.settings import TestConfig
 
 # Constants
-SIGN_IN_LINK_TEXT = 'Sign in through reddit'
+SIGN_IN_LINK_TEXT_LANDING_PAGE = 'Sign in through reddit'
+SIGN_IN_LINK_TEXT_NAVBAR = 'Sign in'
 LOGOUT_FORM_ID = 'logout-form'
 MOCK_USERNAME = 'mock_user'
 
@@ -32,7 +33,8 @@ class TestLandingPage(BaseTestCase):
     def test_landing_page(self):
         res = self.test_app.get(url_for('root.index'))
         assert_equal(res.status_code, 200)
-        assert_in(SIGN_IN_LINK_TEXT, res)
+        assert_equal(res.template, 'landing.html')
+        assert_in(SIGN_IN_LINK_TEXT_LANDING_PAGE, res)
 
 class TestLoggingIn(BaseTestCase):
     def test_log_in_from_landing_page(self):
@@ -40,14 +42,14 @@ class TestLoggingIn(BaseTestCase):
         res = self.test_app.get(url_for('root.index'))
         assert_equal(res.status_code, 200)
         assert_equal(res.template, 'landing.html')
-        assert_in(SIGN_IN_LINK_TEXT, res)
+        assert_in(SIGN_IN_LINK_TEXT_LANDING_PAGE, res)
 
         # Confirm that we're logged out
         assert_not_in('username', res.session)
         assert_not_in('access_info', res.session)
 
         # Click the sign-in link
-        res = res.click(SIGN_IN_LINK_TEXT)
+        res = res.click(SIGN_IN_LINK_TEXT_LANDING_PAGE)
         assert_equal(res.status_code, 302)
         assert_url_equal(res.location, url_for('root.index'))
 
@@ -126,6 +128,64 @@ class TestOAuthCallback(BaseTestCase):
         res = self.test_app.get(url_for('oauth.oauth_callback', state='california'),
                                 status=401)
         assert_equal(res.status_code, 401)
+
+class TestUserPage(BaseTestCase):
+    def test_user_page_logged_out(self):
+        res = self.test_app.get(url_for('root.user'))
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'home.html')
+
+        # Verify that the sign in link is present
+        assert_in(SIGN_IN_LINK_TEXT_NAVBAR, res)
+
+    def test_user_page_logged_in(self):
+        username = 'test_user'
+
+        # Log in as 'test_user'
+        with self.test_app.session_transaction() as _session:
+            _session['username'] = username
+
+        res = self.test_app.get(url_for('root.user'))
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'home.html')
+
+        # Verify that the logout form is present
+        assert_in(LOGOUT_FORM_ID, res.forms)
+
+class Test404Page(BaseTestCase):
+    def test_404_page(self):
+        res = self.test_app.get('/there/is/no/reason/for/this/route/to/exist',
+                                status=404)
+        assert_equal(res.status_code, 404)
+        assert_equal(res.template, 'errors/404.html')
+
+class TestAPI(BaseTestCase):
+    def test_user_likes(self):
+        username = 'test_user'
+
+        res = self.test_app.get(url_for('api.user_likes', username=username))
+        assert_equal(res.status_code, 200)
+        assert_in('likes', res.json)
+
+    def test_my_likes_logged_out(self):
+        res = self.test_app.get(url_for('api.my_likes'), status=401)
+        assert_equal(res.status_code, 401)
+
+    def test_my_likes_logged_in(self):
+        username = 'test_user'
+
+        # Log in as 'test_user'
+        with self.test_app.session_transaction() as _session:
+            _session['username'] = username
+            _session['access_info'] = {
+                'scope': '',
+                'access_token': '',
+                'refresh_token': '',
+            }
+
+        res = self.test_app.get(url_for('api.my_likes'))
+        assert_equal(res.status_code, 200)
+        assert_in('likes', res.json)
 
 def assert_url_equal(url_a, url_b):
     parsed_url_a = urlparse(url_a)
