@@ -12,6 +12,7 @@ from flask import session
 from flask import url_for
 
 # Our libs
+from upvotebay.models import User
 from upvotebay.utils import reddit_client
 
 blueprint = Blueprint('root',

@@ -10,6 +10,7 @@ import nose
 
 # Our libs
 from upvotebay.app import create_app
+from upvotebay.extensions import db
 from upvotebay.settings import DevConfig, ProdConfig
 
 # Constants
@@ -41,6 +42,10 @@ def test():
                    '--cover-html',
                    '--cover-html-dir=./coverage_report',
                    '--cov-config=.coveragerc'])
+
+@manager.command
+def createdevdb():
+    db.create_all()
 
 if __name__ == '__main__':
     manager.run()

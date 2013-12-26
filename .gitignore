@@ -39,3 +39,6 @@ coverage_report
 
 # Vim swap files
 *.swp
+
+# Local database
+dev.db
