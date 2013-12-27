@@ -26,7 +26,7 @@ blueprint = Blueprint('root',
 @reddit_client
 def index(reddit=None):
     if current_user.is_active():
-        return home(reddit)
+        return home()
 
     return landing(reddit)
 
@@ -38,7 +38,7 @@ def landing(reddit):
     return render_template('landing.html',
                            auth_url=auth_url)
 
-def home(reddit):
+def home():
     return render_template('home.html',
                            current_user=current_user)
 
