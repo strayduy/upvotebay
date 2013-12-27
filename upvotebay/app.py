@@ -27,7 +27,7 @@ def register_extensions(app):
 def register_blueprints(app):
     app.register_blueprint(root.blueprint)
     app.register_blueprint(oauth.blueprint)
-    app.register_blueprint(api.blueprint, url_prefix='/api')
+    app.register_blueprint(api.blueprint)
 
 @login_manager.user_loader
 def load_user(user_id):
