@@ -5,6 +5,8 @@ from flask import Flask
 
 # Our libs
 from .extensions import db
+from .extensions import login_manager
+from .models import User
 from .modules import root
 from .modules import oauth
 from .modules import api
@@ -20,8 +22,13 @@ def create_app(config_object):
 
 def register_extensions(app):
     db.init_app(app)
+    login_manager.init_app(app)
 
 def register_blueprints(app):
     app.register_blueprint(root.blueprint)
     app.register_blueprint(oauth.blueprint)
     app.register_blueprint(api.blueprint, url_prefix='/api')
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get_by_id(int(user_id))

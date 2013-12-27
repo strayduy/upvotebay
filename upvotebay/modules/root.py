@@ -10,6 +10,8 @@ from flask import redirect
 from flask import render_template
 from flask import session
 from flask import url_for
+from flask.ext.login import current_user
+from flask.ext.login import logout_user
 
 # Our libs
 from upvotebay.models import User
@@ -23,10 +25,10 @@ blueprint = Blueprint('root',
 @blueprint.route('/')
 @reddit_client
 def index(reddit=None):
-    if not is_logged_in():
-        return landing(reddit)
+    if current_user.is_active():
+        return home(reddit)
 
-    return home(reddit)
+    return landing(reddit)
 
 def landing(reddit):
     oauth_scopes = flask.current_app.config['REDDIT_OAUTH_SCOPES']
@@ -37,7 +39,8 @@ def landing(reddit):
                            auth_url=auth_url)
 
 def home(reddit):
-    return render_template('home.html')
+    return render_template('home.html',
+                           current_user=current_user)
 
 @blueprint.route('/u/')
 @blueprint.route('/u/<path:extra_path>')
@@ -45,7 +48,7 @@ def home(reddit):
 def user(extra_path=None, reddit=None):
     auth_url = ''
 
-    if not is_logged_in():
+    if not current_user.is_active():
         oauth_scopes = flask.current_app.config['REDDIT_OAUTH_SCOPES']
         session['auth_key'], auth_url = generate_auth_key_and_auth_url(reddit,
                                                                        oauth_scopes)
@@ -69,12 +72,8 @@ def generate_auth_key_and_auth_url(reddit, scopes, refreshable=True):
 # http://stackoverflow.com/a/14587231
 @blueprint.route('/logout', methods=['POST'])
 def logout():
-    session.pop('username', None)
-    session.pop('oauth_refresh_token', None)
+    logout_user()
     return redirect(url_for('root.index'))
-
-def is_logged_in():
-    return bool(session.get('username'))
 
 @blueprint.app_errorhandler(404)
 def error_404(error):

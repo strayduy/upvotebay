@@ -35,16 +35,6 @@ def reddit_client(view):
         return view(*args, **kwargs)
     return wrap
 
-def login_required(view):
-    # Raises a 401 HTTP error if the user is not logged in
-    @wraps(view)
-    def wrap(*args, **kwargs):
-        if session.get('username'):
-            return view(*args, **kwargs)
-
-        abort(401)
-    return wrap
-
 class PrawEncoder(json.JSONEncoder):
     def default(self, obj):
         if (isinstance(obj, praw.objects.Submission) or

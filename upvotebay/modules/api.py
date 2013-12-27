@@ -5,11 +5,11 @@ import flask
 from flask import Blueprint
 from flask import json
 from flask import Response
-from flask import session
+from flask.ext.login import current_user
+from flask.ext.login import login_required
 
 # Our libs
 from upvotebay.utils import reddit_client
-from upvotebay.utils import login_required
 from upvotebay.utils import PrawEncoder
 
 blueprint = Blueprint('api',
@@ -31,9 +31,9 @@ def user_likes(username, reddit=None):
 @login_required
 def my_likes(reddit=None):
     # Set credentials
-    reddit.set_access_credentials(scope=set(session['access_info']['scope']),
-                                  access_token=session['access_info']['access_token'],
-                                  refresh_token=session['access_info']['refresh_token'])
+    reddit.set_access_credentials(scope=set(current_user.oauth_scope.split(',')),
+                                  access_token=current_user.oauth_access_token,
+                                  refresh_token=current_user.oauth_refresh_token)
 
     # Get likes
     user = reddit.get_me()
