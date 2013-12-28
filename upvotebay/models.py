@@ -16,9 +16,9 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(256), nullable=True)
     created_on = db.Column(db.DateTime(), nullable=False)
     _is_active = db.Column(db.Boolean(), default=True)
-    oauth_scope = db.Column(db.Text(), nullable=True)
-    oauth_access_token = db.Column(db.Text(), nullable=True)
-    oauth_refresh_token = db.Column(db.Text(), nullable=True)
+    oauth_scope = db.Column(db.Text(), default='', nullable=False)
+    oauth_access_token = db.Column(db.Text(), default='', nullable=False)
+    oauth_refresh_token = db.Column(db.Text(), default='', nullable=False)
 
     @classmethod
     def get_by_id(cls, user_id):
