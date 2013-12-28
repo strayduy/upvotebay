@@ -75,11 +75,3 @@ def generate_auth_key_and_auth_url(reddit, scopes, refreshable=True):
 def logout():
     logout_user()
     return redirect(url_for('root.index'))
-
-@blueprint.app_errorhandler(404)
-def error_404(error):
-    return render_template('errors/404.html'), 404
-
-@blueprint.app_errorhandler(500)
-def error_500(error):
-    return render_template('errors/500.html'), 500
