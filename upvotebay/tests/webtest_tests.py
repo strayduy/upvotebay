@@ -12,6 +12,8 @@ from nose.tools import * # PEP8 asserts
 
 # Our libs
 from upvotebay.app import create_app
+from upvotebay.extensions import db
+from upvotebay.models import User
 from upvotebay.modules import root
 from upvotebay.settings import TestConfig
 
@@ -27,7 +29,20 @@ class BaseTestCase(TestCase):
         return app
 
     def setUp(self):
-        self.test_app = TestApp(self.app)
+        self.test_app = TestApp(self.app, db=db, use_session_scopes=True)
+        db.create_all()
+
+        # Add test user account
+        test_user = User(username=MOCK_USERNAME)
+        db.session.add(test_user)
+        db.session.commit()
+
+        # Store test user ID to verify against later
+        self.test_user_id = unicode(test_user.id)
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
 
 class TestLandingPage(BaseTestCase):
     def test_landing_page(self):
@@ -45,8 +60,7 @@ class TestLoggingIn(BaseTestCase):
         assert_in(SIGN_IN_LINK_TEXT_LANDING_PAGE, res)
 
         # Confirm that we're logged out
-        assert_not_in('username', res.session)
-        assert_not_in('access_info', res.session)
+        assert_not_in('user_id', res.session)
 
         # Click the sign-in link
         res = res.click(SIGN_IN_LINK_TEXT_LANDING_PAGE)
@@ -58,17 +72,13 @@ class TestLoggingIn(BaseTestCase):
         res = res.follow()
         assert_equal(res.status_code, 200)
         assert_equal(res.template, 'home.html')
-        assert_equal(res.session['username'], MOCK_USERNAME)
-        assert_equal(res.session['access_info']['scope'],
-                     self.app.config['REDDIT_OAUTH_SCOPES'])
+        assert_equal(res.session['user_id'], self.test_user_id)
 
 class TestLoggingOut(BaseTestCase):
     def test_log_out(self):
-        username = 'test_user'
-
-        # Log in as 'test_user'
+        # Log in as test user
         with self.test_app.session_transaction() as _session:
-            _session['username'] = username
+            _session['user_id'] = self.test_user_id
 
         # Go to home page
         res = self.test_app.get(url_for('root.index'))
@@ -77,7 +87,7 @@ class TestLoggingOut(BaseTestCase):
         assert_in(LOGOUT_FORM_ID, res.forms)
 
         # Confirm that we're logged in
-        assert_equal(res.session['username'], username)
+        assert_equal(res.session['user_id'], self.test_user_id)
 
         # Submit the logout form
         logout_form = res.forms[LOGOUT_FORM_ID]
@@ -89,7 +99,7 @@ class TestLoggingOut(BaseTestCase):
         res = res.follow()
         assert_equal(res.status_code, 200)
         assert_equal(res.template, 'landing.html')
-        assert_not_in('username', res.session)
+        assert_not_in('user_id', res.session)
 
 class TestOAuthCallback(BaseTestCase):
     def test_valid_oauth_state(self):
@@ -110,9 +120,7 @@ class TestOAuthCallback(BaseTestCase):
         res = res.follow()
         assert_equal(res.status_code, 200)
         assert_equal(res.template, 'home.html')
-        assert_equal(res.session['username'], MOCK_USERNAME)
-        assert_equal(res.session['access_info']['scope'],
-                     self.app.config['REDDIT_OAUTH_SCOPES'])
+        assert_equal(res.session['user_id'], self.test_user_id)
 
     def test_omitted_oauth_state(self):
         res = self.test_app.get(url_for('oauth.oauth_callback'),
@@ -139,11 +147,9 @@ class TestUserPage(BaseTestCase):
         assert_in(SIGN_IN_LINK_TEXT_NAVBAR, res)
 
     def test_user_page_logged_in(self):
-        username = 'test_user'
-
-        # Log in as 'test_user'
+        # Log in as test user
         with self.test_app.session_transaction() as _session:
-            _session['username'] = username
+            _session['user_id'] = self.test_user_id
 
         res = self.test_app.get(url_for('root.user'))
         assert_equal(res.status_code, 200)
@@ -161,9 +167,7 @@ class Test404Page(BaseTestCase):
 
 class TestAPI(BaseTestCase):
     def test_user_likes(self):
-        username = 'test_user'
-
-        res = self.test_app.get(url_for('api.user_likes', username=username))
+        res = self.test_app.get(url_for('api.user_likes', username=MOCK_USERNAME))
         assert_equal(res.status_code, 200)
         assert_in('likes', res.json)
 
@@ -172,16 +176,9 @@ class TestAPI(BaseTestCase):
         assert_equal(res.status_code, 401)
 
     def test_my_likes_logged_in(self):
-        username = 'test_user'
-
-        # Log in as 'test_user'
+        # Log in as test user
         with self.test_app.session_transaction() as _session:
-            _session['username'] = username
-            _session['access_info'] = {
-                'scope': '',
-                'access_token': '',
-                'refresh_token': '',
-            }
+            _session['user_id'] = self.test_user_id
 
         res = self.test_app.get(url_for('api.my_likes'))
         assert_equal(res.status_code, 200)

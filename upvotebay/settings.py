@@ -20,6 +20,12 @@ class ProdConfig(Config):
 
 class TestConfig(Config):
     DEBUG = False
+
+    # Database settings
+    DB_NAME = 'test.db'
+    DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
+
     USE_MOCK_REDDIT_CLIENT = True
 
 class DevConfig(Config):

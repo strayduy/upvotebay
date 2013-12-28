@@ -40,5 +40,6 @@ coverage_report
 # Vim swap files
 *.swp
 
-# Local database
+# Local databases
 dev.db
+test.db
