@@ -89,6 +89,7 @@ def user(extra_path=None, reddit=None):
                                                                        oauth_scopes)
 
     return render_template('home.html',
+                           current_user=current_user,
                            auth_url=auth_url)
 
 def generate_auth_key_and_auth_url(reddit, scopes, refreshable=True):
