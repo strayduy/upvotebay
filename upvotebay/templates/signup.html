@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "includes/navbar.html" %}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 col-sm-12">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form role="form" action="confirm-signup" method="post">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>For this to work, you'll need to <a href="https://ssl.reddit.com/prefs/">make your votes public</a>.</p>
+                </div>
+                <div class="panel-footer text-right">
+                    <button type="submit" class="btn btn-primary">Share my karma!</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{% endblock %}
