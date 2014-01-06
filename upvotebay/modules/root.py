@@ -18,7 +18,6 @@ import requests
 
 # Our libs
 from upvotebay.extensions import db
-from upvotebay.models import User
 from upvotebay.utils import reddit_client
 
 blueprint = Blueprint('root',

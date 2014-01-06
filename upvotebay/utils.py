@@ -7,7 +7,6 @@ from functools import wraps
 import flask
 from flask import abort
 from flask import json
-from flask import session
 import praw
 
 # Our libs
