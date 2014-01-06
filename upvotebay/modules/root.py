@@ -51,7 +51,10 @@ def home():
 @blueprint.route('/signup')
 @login_required
 def signup():
-    return render_template('signup.html')
+    if current_user.is_active() and not current_user.has_confirmed_signup:
+        return render_template('signup.html')
+
+    return redirect(url_for('root.index'))
 
 @blueprint.route('/confirm-signup', methods=['POST'])
 @reddit_client

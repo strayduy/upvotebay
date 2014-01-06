@@ -8,6 +8,7 @@ import uuid
 from flask import url_for
 from flask.ext.testing import TestCase
 from flask.ext.webtest import TestApp
+import mock
 from nose.tools import * # PEP8 asserts
 
 # Our libs
@@ -16,12 +17,15 @@ from upvotebay.extensions import db
 from upvotebay.models import User
 from upvotebay.modules import root
 from upvotebay.settings import TestConfig
+from upvotebay.utils import MockReddit
 
 # Constants
 SIGN_IN_LINK_TEXT_LANDING_PAGE = 'Sign in through reddit'
 SIGN_IN_LINK_TEXT_NAVBAR = 'Sign in'
+SIGNUP_FORM_ID = 'signup-form'
 LOGOUT_FORM_ID = 'logout-form'
-MOCK_USERNAME = 'mock_user'
+TEST_USERNAME = MockReddit.DEFAULT_USERNAME
+UNCONFIRMED_USERNAME = 'unconfirmed_user'
 
 class BaseTestCase(TestCase):
     def create_app(self):
@@ -32,13 +36,16 @@ class BaseTestCase(TestCase):
         self.test_app = TestApp(self.app, db=db, use_session_scopes=True)
         db.create_all()
 
-        # Add test user account
-        test_user = User(username=MOCK_USERNAME)
+        # Add test user accounts
+        test_user = User(username=TEST_USERNAME, has_confirmed_signup=True)
+        unconfirmed_user = User(username=UNCONFIRMED_USERNAME, has_confirmed_signup=False)
         db.session.add(test_user)
+        db.session.add(unconfirmed_user)
         db.session.commit()
 
-        # Store test user ID to verify against later
+        # Store test user IDs to verify against later
         self.test_user_id = unicode(test_user.id)
+        self.unconfirmed_user_id = unicode(unconfirmed_user.id)
 
     def tearDown(self):
         db.session.remove()
@@ -73,6 +80,79 @@ class TestLoggingIn(BaseTestCase):
         assert_equal(res.status_code, 200)
         assert_equal(res.template, 'home.html')
         assert_equal(res.session['user_id'], self.test_user_id)
+
+    @mock.patch.object(MockReddit, 'get_username')
+    def test_log_in_from_landing_page_with_unconfirmed_user(self, get_username_method):
+        get_username_method.return_value = UNCONFIRMED_USERNAME
+
+        # Go to landing page
+        res = self.test_app.get(url_for('root.index'))
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'landing.html')
+        assert_in(SIGN_IN_LINK_TEXT_LANDING_PAGE, res)
+
+        # Confirm that we're logged out
+        assert_not_in('user_id', res.session)
+
+        # Click the sign-in link
+        res = res.click(SIGN_IN_LINK_TEXT_LANDING_PAGE)
+        assert_equal(res.status_code, 302)
+        assert_url_equal(res.location, url_for('root.index'))
+
+        # Follow the oauth callback redirect to the home page
+        res = res.follow()
+        assert_equal(res.status_code, 302)
+        assert_url_equal(res.location, url_for('root.signup'))
+
+        # Follow the second redirect to the signup page
+        res = res.follow()
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'signup.html')
+
+        # Confirm that we're logged in as the unconfirmed user
+        assert_equal(res.session['user_id'], self.unconfirmed_user_id)
+
+class TestSignup(BaseTestCase):
+    @mock.patch.object(MockReddit, 'get_username')
+    def test_signing_up_with_unconfirmed_user(self, get_username_method):
+        get_username_method.return_value = UNCONFIRMED_USERNAME
+
+        # Log in as unconfirmed user
+        with self.test_app.session_transaction() as _session:
+            _session['user_id'] = self.unconfirmed_user_id
+
+        # Go to signup page
+        res = self.test_app.get(url_for('root.signup'))
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'signup.html')
+
+        # Submit the signup form
+        signup_form = res.forms[SIGNUP_FORM_ID]
+        res = signup_form.submit()
+        assert_equal(res.status_code, 302)
+        assert_url_equal(res.location, url_for('root.index'))
+
+        # Confirm that we're redirected to the home page
+        res = res.follow()
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'home.html')
+
+    def test_signing_up_with_confirmed_user(self):
+        # Log in as test user
+        with self.test_app.session_transaction() as _session:
+            _session['user_id'] = self.test_user_id
+
+        # Go to signup page
+        res = self.test_app.get(url_for('root.signup'))
+
+        # Confirm that we're redirected to the home page
+        assert_equal(res.status_code, 302)
+        assert_url_equal(res.location, url_for('root.index'))
+
+        # Follow the redirect to the home page
+        res = res.follow()
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'home.html')
 
 class TestLoggingOut(BaseTestCase):
     def test_log_out(self):
@@ -167,7 +247,7 @@ class Test404Page(BaseTestCase):
 
 class TestAPI(BaseTestCase):
     def test_user_likes(self):
-        res = self.test_app.get(url_for('api.user_likes', username=MOCK_USERNAME))
+        res = self.test_app.get(url_for('api.user_likes', username=TEST_USERNAME))
         assert_equal(res.status_code, 200)
         assert_in('likes', res.json)
 
