@@ -8,6 +8,8 @@ import random
 from flask import url_for
 
 class MockReddit(object):
+    DEFAULT_USERNAME = 'mock_user'
+
     def __init__(self, config):
         self.config = config
         self.user = None
@@ -25,7 +27,7 @@ class MockReddit(object):
         return url_for('oauth.oauth_callback', state=state)
 
     def get_access_information(self, code, update_session=True):
-        self.user = MockRedditUser('mock_user')
+        self.user = MockRedditUser(self.__class__.get_username())
         access_info = {
             'scope': self.config['REDDIT_OAUTH_SCOPES'],
             'access_token': '',
@@ -35,7 +37,11 @@ class MockReddit(object):
 
     def set_access_credentials(self, scope, access_token, refresh_token=None,
                                update_user=True):
-        self.user = MockRedditUser('mock_user')
+        self.user = MockRedditUser(self.__class__.get_username())
+
+    @classmethod
+    def get_username(cls):
+        return cls.DEFAULT_USERNAME
 
 class MockRedditUser(object):
     def __init__(self, name):

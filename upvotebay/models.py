@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(256), nullable=True)
     created_on = db.Column(db.DateTime(), nullable=False)
     _is_active = db.Column(db.Boolean(), default=True)
+    has_confirmed_signup = db.Column(db.Boolean(), default=False)
     oauth_scope = db.Column(db.Text(), default='', nullable=False)
     oauth_access_token = db.Column(db.Text(), default='', nullable=False)
     oauth_refresh_token = db.Column(db.Text(), default='', nullable=False)
@@ -28,6 +29,7 @@ class User(db.Model, UserMixin):
                        email=None,
                        created_on=None,
                        _is_active=True,
+                       has_confirmed_signup=False,
                        oauth_scope=None,
                        oauth_access_token=None,
                        oauth_refresh_token=None):
@@ -38,6 +40,7 @@ class User(db.Model, UserMixin):
         else:
             self.created_on = datetime.utcnow()
         self._is_active = _is_active
+        self.has_confirmed_signup = has_confirmed_signup
         self.oauth_scope = oauth_scope
         self.oauth_access_token = oauth_access_token
         self.oauth_refresh_token = oauth_refresh_token

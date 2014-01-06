@@ -6,15 +6,18 @@ import uuid
 # Third party libs
 import flask
 from flask import Blueprint
+from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import session
 from flask import url_for
 from flask.ext.login import current_user
+from flask.ext.login import login_required
 from flask.ext.login import logout_user
+import requests
 
 # Our libs
-from upvotebay.models import User
+from upvotebay.extensions import db
 from upvotebay.utils import reddit_client
 
 blueprint = Blueprint('root',
@@ -26,7 +29,10 @@ blueprint = Blueprint('root',
 @reddit_client
 def index(reddit=None):
     if current_user.is_active():
-        return home()
+        if current_user.has_confirmed_signup:
+            return home()
+
+        return redirect(url_for('root.signup'))
 
     return landing(reddit)
 
@@ -39,8 +45,39 @@ def landing(reddit):
                            auth_url=auth_url)
 
 def home():
-    return render_template('home.html',
-                           current_user=current_user)
+    return render_template('home.html')
+
+@blueprint.route('/signup')
+@login_required
+def signup():
+    if current_user.is_active() and not current_user.has_confirmed_signup:
+        return render_template('signup.html')
+
+    return redirect(url_for('root.index'))
+
+@blueprint.route('/confirm-signup', methods=['POST'])
+@reddit_client
+@login_required
+def confirm_signup(reddit=None):
+    reddit.set_access_credentials(scope=set(current_user.oauth_scope.split(',')),
+                                  access_token=current_user.oauth_access_token,
+                                  refresh_token=current_user.oauth_refresh_token)
+
+    # Check that we can access the user's upvotes
+    try:
+        user = reddit.get_me()
+        likes = [l for l in user.get_liked()]
+    except requests.exceptions.HTTPError:
+        # If we can't, redirect back to the signup page with an error message
+        flash("Sorry, we weren't able to access your upvotes."
+              "Could you double-check that they're public?")
+        return redirect(url_for('root.signup'))
+
+    # If we can access their upvotes, mark the user as having confirmed signup
+    current_user.has_confirmed_signup = True
+    db.session.commit()
+
+    return redirect(url_for('root.index'))
 
 @blueprint.route('/u/')
 @blueprint.route('/u/<path:extra_path>')
