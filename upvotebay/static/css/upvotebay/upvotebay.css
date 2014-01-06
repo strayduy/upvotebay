@@ -9,3 +9,27 @@ body {
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }
+
+.like-panel .title {
+    margin-bottom: 1px;
+}
+
+.like-panel .tagline {
+    color: #888888;
+    font-size: small;
+    margin-bottom: 1px;
+}
+
+.like-panel a.title-link {
+    color: #0000FF;
+    font-size: medium;
+}
+
+.like-panel a.author-link, .like-panel a.subreddit-link {
+    color: #336699;
+}
+
+.like-panel a.permalink {
+    color: #888888;
+    font-weight: bold;
+}

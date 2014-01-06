@@ -18,6 +18,7 @@
     "angular": "~1.2.3",
     "angular-route": "~1.2.3",
     "bootstrap": "~3.0.2",
+    "momentjs": "~2.5.0",
     "jquery": "~2.0.3"
   },
   "exportsOverride": {
@@ -32,6 +33,9 @@
           "js": "dist/js/*.js",
           "css": "dist/css/*.css",
           "font": "dist/fonts/*"
+      },
+      "momentjs": {
+          "js": "min/*.js"
       },
       "jquery": {
           "js": "*.js"

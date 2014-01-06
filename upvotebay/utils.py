@@ -38,8 +38,12 @@ class PrawEncoder(json.JSONEncoder):
     def default(self, obj):
         if (isinstance(obj, praw.objects.Submission) or
             isinstance(obj, MockRedditSubmission)):
-            return {'title'     : obj.title,
-                    'url'       : obj.url,
-                    'author'    : obj.author.name,
-                    'subreddit' : obj.subreddit.display_name}
+            return {'title'         : obj.title,
+                    'url'           : obj.url,
+                    'author'        : obj.author.name,
+                    'subreddit'     : obj.subreddit.display_name,
+                    'thumbnail_url' : obj.thumbnail,
+                    'num_comments'  : obj.num_comments,
+                    'permalink_url' : obj.permalink,
+                    'created_utc'   : obj.created_utc}
         return json.JSONEncoder.default(self, obj)

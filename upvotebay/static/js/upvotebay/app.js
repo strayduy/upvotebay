@@ -1,6 +1,7 @@
 var upvotebayApp = angular.module('upvotebayApp', [
     'ngRoute',
-    'upvotebayControllers'
+    'upvotebayControllers',
+    'upvotebayFilters'
 ]);
 
 upvotebayApp.config(['$routeProvider', '$locationProvider',

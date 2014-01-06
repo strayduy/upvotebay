@@ -1,22 +1,29 @@
 <div class="row">
-    <div class="col-sm-4 hidden-xs">
+    <div class="col-md-3 hidden-sm">
     </div>
-    <div class="col-sm-8 col-xs-12">
+    <div class="col-md-9 col-sm-12">
         <ul ng-cloak style="list-style:none;">
             <li ng-repeat="like in likes">
-                <div class="panel panel-default">
+                <div class="panel panel-default like-panel">
                     <div class="panel-body">
-                        <div>
-                            <strong>{{ like.author }}</strong>
-                            <div class="pull-right">
-                                <span class="text-muted">1h</span>
+                        <div class="row">
+                            <div class="col-md-2 col-sm-2">
+                                <img ng-src="{{ like.thumbnail_url }}" ng-if="like.thumbnail_url">
                             </div>
-                        </div>
-                        <div>
-                            <a href="{{ like.url }}">{{ like.title }}</a>
-                        </div>
-                        <div>
-                            <span class="text-muted">{{ like.subreddit }}</span>
+                            <div class="col-md-10 col-sm-10">
+                                <p class="title">
+                                    <a class="title-link" ng-href="{{ like.url }}">{{ like.title }}</a>
+                                </p>
+                                <p class="tagline">
+                                    submitted {{ like.created_utc | momentFromNow }} by
+                                    <a class="author-link" ng-href="//www.reddit.com/user/{{ like.author }}/">{{ like.author }}</a>
+                                    to
+                                    <a class="subreddit-link" ng-href="//www.reddit.com/r/{{ like.subreddit }}/">{{ like.subreddit }}</a>
+                                </p>
+                                <p class="tagline">
+                                    <a class="permalink" ng-href="{{ like.permalink_url }}">{{ like.num_comments }} comments</a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
