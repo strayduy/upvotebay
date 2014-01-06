@@ -10,6 +10,7 @@ from flask.ext.testing import TestCase
 from flask.ext.webtest import TestApp
 import mock
 from nose.tools import * # PEP8 asserts
+import requests
 
 # Our libs
 from upvotebay.app import create_app
@@ -23,6 +24,7 @@ from upvotebay.utils import MockReddit
 SIGN_IN_LINK_TEXT_LANDING_PAGE = 'Sign in through reddit'
 SIGN_IN_LINK_TEXT_NAVBAR = 'Sign in'
 SIGNUP_FORM_ID = 'signup-form'
+SIGNUP_ERROR_MSG_CLASS = 'alert-danger'
 LOGOUT_FORM_ID = 'logout-form'
 TEST_USERNAME = MockReddit.DEFAULT_USERNAME
 UNCONFIRMED_USERNAME = 'unconfirmed_user'
@@ -136,6 +138,41 @@ class TestSignup(BaseTestCase):
         res = res.follow()
         assert_equal(res.status_code, 200)
         assert_equal(res.template, 'home.html')
+
+    @mock.patch('upvotebay.tests.mockreddit.MockRedditUser')
+    @mock.patch.object(MockReddit, 'get_username')
+    def test_signing_up_with_private_upvotes(self,
+                                             get_username_method,
+                                             mock_reddit_user_class):
+        get_username_method.return_value = UNCONFIRMED_USERNAME
+        mock_reddit_user_instance = mock_reddit_user_class.return_value
+        mock_reddit_user_instance.get_liked.side_effect = requests.exceptions.HTTPError()
+
+        # Log in as unconfirmed user
+        with self.test_app.session_transaction() as _session:
+            _session['user_id'] = self.unconfirmed_user_id
+
+        # Go to signup page
+        res = self.test_app.get(url_for('root.signup'))
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'signup.html')
+
+        # Verify that there aren't any intial error messages on the page
+        assert_not_in(SIGNUP_ERROR_MSG_CLASS, res)
+
+        # Submit the signup form
+        signup_form = res.forms[SIGNUP_FORM_ID]
+        res = signup_form.submit()
+        assert_equal(res.status_code, 302)
+        assert_url_equal(res.location, url_for('root.signup'))
+
+        # Confirm that we're redirected back to the signup page
+        res = res.follow()
+        assert_equal(res.status_code, 200)
+        assert_equal(res.template, 'signup.html')
+
+        # Verify that an error message was displayed
+        assert_in(SIGNUP_ERROR_MSG_CLASS, res)
 
     def test_signing_up_with_confirmed_user(self):
         # Log in as test user
