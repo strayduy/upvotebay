@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 # Standard libs
+import calendar
 from collections import namedtuple
+from datetime import datetime, timedelta
 import random
 
 # Third party libs
@@ -76,6 +78,12 @@ class MockRedditSubmission(object):
         self.title = title
         self.url = url
         self.author = author
+        self.thumbnail = ''
+        self.num_comments = random.randint(0, 1000)
+        self.permalink = '#'
 
         self.subreddit = namedtuple('Subreddit', 'display_name')
         self.subreddit.display_name = subreddit
+
+        created_utc = datetime.now() - timedelta(minutes=random.randint(1, 1000))
+        self.created_utc = calendar.timegm(created_utc.utctimetuple())
