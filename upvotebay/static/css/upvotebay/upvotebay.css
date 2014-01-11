@@ -25,6 +25,14 @@ body {
     font-size: medium;
 }
 
+.like-panel a.title-link:hover {
+    text-decoration: none;
+}
+
+.like-panel a.title-link:visited {
+    color: #800080;
+}
+
 .like-panel a.author-link, .like-panel a.subreddit-link {
     color: #336699;
 }
