@@ -2,15 +2,18 @@
     <div class="col-md-3 hidden-sm">
     </div>
     <div class="col-md-9 col-sm-12">
-        <ul ng-cloak style="list-style:none;">
+        <div class="jumbotron">
+            <h2>{{ current_user.username }}</h2>
+        </div>
+        <ul ng-cloak style="list-style:none;padding-left:0;">
             <li ng-repeat="like in likes">
                 <div class="panel panel-default like-panel">
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-md-2 col-sm-2">
-                                <img ng-src="{{ like.thumbnail_url }}" ng-if="like.thumbnail_url">
+                            <div class="col-sm-2" ng-if="like.has_thumbnail()">
+                                <img ng-src="{{ like.thumbnail_url }}">
                             </div>
-                            <div class="col-md-10 col-sm-10">
+                            <div ng-class="{true: 'col-sm-10', false: 'col-sm-12'}[like.has_thumbnail()]">
                                 <p class="title">
                                     <a class="title-link" ng-href="{{ like.url }}">{{ like.title }}</a>
                                 </p>

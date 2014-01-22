@@ -7,6 +7,8 @@ import uuid
 import flask
 from flask import Blueprint
 from flask import flash
+from flask import json
+from flask import make_response
 from flask import redirect
 from flask import render_template
 from flask import session
@@ -45,7 +47,12 @@ def landing(reddit):
                            auth_url=auth_url)
 
 def home():
-    return render_template('home.html')
+    resp = make_response(render_template('home.html'))
+    current_user_obj = {
+        'username': current_user.username,
+    }
+    resp.set_cookie('current_user', json.dumps(current_user_obj))
+    return resp
 
 @blueprint.route('/signup')
 @login_required

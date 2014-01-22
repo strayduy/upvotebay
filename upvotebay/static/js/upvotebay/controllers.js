@@ -1,9 +1,21 @@
 var upvotebayControllers = angular.module('upvotebayControllers', []);
 
-upvotebayControllers.controller('MyProfileCtrl', ['$scope', '$http',
-    function($scope, $http) {
+upvotebayControllers.controller('MyProfileCtrl', ['$scope', '$http', 'LoginService',
+    function($scope, $http, LoginService) {
+        $scope.current_user = LoginService.current_user;
+
         $http.get('/api/v1/my/likes.json').success(function(data) {
-            $scope.likes = data['likes'];
+            var likes = [];
+
+            angular.forEach(data.likes, function(like, i) {
+                like.has_thumbnail = function() {
+                    return !!like.thumbnail_url && like.thumbnail_url !== 'self';
+                };
+
+                likes.push(like);
+            });
+
+            $scope.likes = likes;
         });
     }]
 );

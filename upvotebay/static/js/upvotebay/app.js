@@ -1,4 +1,5 @@
 var upvotebayApp = angular.module('upvotebayApp', [
+    'ngCookies',
     'ngRoute',
     'upvotebayControllers',
     'upvotebayFilters'
@@ -21,3 +22,9 @@ upvotebayApp.config(['$routeProvider', '$locationProvider',
             });
     }
 ]);
+
+upvotebayApp.factory('LoginService', ['$cookieStore', function($cookieStore) {
+    var current_user = JSON.parse($cookieStore.get('current_user'));
+    $cookieStore.remove('current_user');
+    return {current_user: current_user};
+}]);
